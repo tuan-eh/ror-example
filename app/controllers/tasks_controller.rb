@@ -23,19 +23,24 @@ class TasksController < ApplicationController
     redirect_to tasks_path, notice: "Task was successfully deleted."
   end
 
-  # PATCH/PUT /tasks/:id
+  # GET /tasks/:id/edit
+  # Fetches the task and loads the edit page
+  def edit
+    @task = Task.find(params[:id])
+  end
+
+  # PATCH /tasks/:id
+  # Saves the changes to the database (handles both title edits AND toggles)
   def update
-    # 1. Find the specific task using the ID from the URL
     @task = Task.find(params[:id])
 
-    # 2. Toggle the boolean (if true make false, if false make true)
-    new_status = !@task.completed
-
-    # 3. Update the database and save
-    @task.update(completed: new_status)
-
-    # 4. Refresh the page
-    redirect_to root_path
+    # task_params will automatically pick up the new title OR the new status
+    if @task.update(task_params)
+      redirect_to root_path, notice: "Task updated successfully!"
+    else
+      # If validation fails (e.g., empty title), re-render the edit form
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   private

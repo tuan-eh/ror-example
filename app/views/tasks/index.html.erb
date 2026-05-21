@@ -10,17 +10,25 @@
 <hr>
 
 <ul>
-    <% @tasks.each do |task| %>
-        <li>
-            <% if task.completed? %>
-                <del><%= task.title %></del>
-            <% else %>
-                <strong><%= task.title %></strong>
-            <% end %>
+ <% @tasks.each do |task| %>
+    <li class="task-item">
+      <span class="task-title">
+        <% if task.completed? %>
+          <del><%= task.title %></del>
+        <% else %>
+          <strong><%= task.title %></strong>
+        <% end %>
+      </span>
 
-            <%= button_to task.completed? ? "Mark Undone" : "Mark Done", task_path(task), method: :patch %>
-            
-            <%= button_to "Delete", task_path(task), method: :delete %>
-        </li>
-    <% end %>
+      <div class="task-actions">
+        <%= button_to task.completed? ? "Mark Undone" : "Mark Done", 
+                      task_path(task), method: :patch, 
+                      params: { task: { completed: !task.completed } } %>
+        
+        <%= link_to "Edit Name", edit_task_path(task) %>
+
+        <%= button_to "Delete", task_path(task), method: :delete %>
+      </div>
+    </li>
+  <% end %>
 </ul>

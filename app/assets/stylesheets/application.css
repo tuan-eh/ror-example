@@ -8,3 +8,26 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+/* Put the title and the actions on the same line */
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Pushes title left, buttons right */
+  max-width: 500px; /* Keeps the row from stretching too far */
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #f8fafc;
+  border-radius: 6px;
+}
+
+/* Put the buttons right next to each other */
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adds space between the buttons */
+}
+
+/* Strip the default margin off the forms that button_to creates */
+.task-actions form {
+  margin: 0;
+}
