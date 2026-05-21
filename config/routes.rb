@@ -9,6 +9,10 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
+  # Creates all standard RESTful routes for tasks (index, create, destroy, etc.)
+  resources :tasks
+
   # Defines the root path route ("/")
-  # root "posts#index"
+  # Sets the home page to the tasks list
+  root "tasks#index"
 end
