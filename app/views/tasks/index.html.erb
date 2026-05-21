@@ -1,8 +1,11 @@
 <h1>My TODO List</h1>
 
 <%= form_with model: @task, local: true do |form| %>
-  <div>
+  <div style="display: flex; gap: 10px; margin-bottom: 20px;">
     <%= form.text_field :title, placeholder: "What needs to be done?" %>
+    
+    <%= form.collection_select :project_id, Project.all, :id, :name, prompt: "Select Project (Optional)" %>
+    
     <%= form.submit "Add Task" %>
   </div>
 <% end %>
@@ -13,6 +16,9 @@
  <% @tasks.each do |task| %>
     <li class="task-item">
       <span class="task-title">
+        <small style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; margin-right: 8px;">
+          <%= task.project&.name || "Inbox" %>
+        </small>
         <% if task.completed? %>
           <del><%= task.title %></del>
         <% else %>
