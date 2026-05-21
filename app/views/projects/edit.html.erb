@@ -1,0 +1,13 @@
+<h1>Edit Project</h1>
+
+<%= form_with model: @project, local: true do |form| %>
+  <div style="margin-bottom: 20px;">
+    <%= form.label :name, "Project Name", style: "display: block; margin-bottom: 5px;" %>
+    <%= form.text_field :name %>
+    
+    <%= form.submit "Update Project" %>
+  </div>
+<% end %>
+
+<br>
+<%= link_to "Cancel", root_path %>

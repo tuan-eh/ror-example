@@ -9,10 +9,16 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Creates all standard RESTful routes for tasks (index, create, destroy, etc.)
-  resources :tasks
+  # 1. The Root Page is now the Projects list
+  root "projects#index"
 
-  # Defines the root path route ("/")
-  # Sets the home page to the tasks list
-  root "tasks#index"
+  # 2. Project CRUD + Nested Tasks
+  resources :projects do
+    # This creates URLs like: GET /projects/1/tasks
+    resources :tasks, only: [ :index, :create ]
+  end
+
+  # 3. Global Task Actions (for editing, updating, or deleting a specific task)
+  # We don't need the project ID in the URL to delete Task #5
+  resources :tasks, only: [ :edit, :update, :destroy ]
 end

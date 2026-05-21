@@ -1,0 +1,38 @@
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <h1><%= @project.name %></h1>
+  <%= link_to "← Back to All Tasks", root_path %>
+</div>
+
+<%= form_with model: @task, local: true do |form| %>
+  <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+    <%= form.text_field :title, placeholder: "Add a task to #{@project.name}..." %>
+    
+    <%= form.hidden_field :project_id, value: @project.id %>
+    
+    <%= form.submit "Add Task" %>
+  </div>
+<% end %>
+
+<hr>
+
+<ul>
+  <% @tasks.each do |task| %>
+    <li class="task-item">
+      <span class="task-title">
+        <% if task.completed? %>
+          <del><%= task.title %></del>
+        <% else %>
+          <strong><%= task.title %></strong>
+        <% end %>
+      </span>
+
+      <div class="task-actions">
+        <%= button_to task.completed? ? "Mark Undone" : "Mark Done", 
+                      task_path(task), method: :patch, 
+                      params: { task: { completed: !task.completed } } %>
+        <%= link_to "Edit Name", edit_task_path(task) %>
+        <%= button_to "Delete", task_path(task), method: :delete %>
+      </div>
+    </li>
+  <% end %>
+</ul>

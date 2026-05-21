@@ -1,0 +1,21 @@
+<h1>My Projects</h1>
+
+<%= form_with model: @project, local: true do |form| %>
+  <div style="margin-bottom: 20px;">
+    <%= form.text_field :name, placeholder: "New Project Name..." %>
+    <%= form.submit "Create Project" %>
+  </div>
+<% end %>
+
+<hr>
+
+<ul>
+  <% @projects.each do |project| %>
+    <li style="display: flex; gap: 15px; margin-bottom: 10px; align-items: center;">
+      <strong><%= link_to project.name, project_tasks_path(project) %></strong>
+      
+      <%= link_to "Edit", edit_project_path(project) %>
+      <%= button_to "Delete", project_path(project), method: :delete %>
+    </li>
+  <% end %>
+</ul>

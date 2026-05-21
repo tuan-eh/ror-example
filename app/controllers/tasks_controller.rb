@@ -1,49 +1,64 @@
 class TasksController < ApplicationController
-  # GET /tasks
+  # 1. Tell Rails to run the `set_task` method before specific actions
+  before_action :set_task, only: [ :edit, :update, :destroy ]
+
+  # GET /projects/:project_id/tasks
   def index
-    @tasks = Task.all
-    @task = Task.new # For the form to create a new task
+    # 1. Find the project from the URL
+    @project = Project.find(params[:project_id])
+
+    # 2. Load only tasks for this project
+    @tasks = @project.tasks
+
+    # 3. Empty task for the form
+    @task = Task.new
   end
 
-  # POST /tasks
+  # POST /projects/:project_id/tasks
   def create
-    @task = Task.new(task_params)
+    @project = Project.find(params[:project_id])
+
+    # Build the task directly through the project association
+    @task = @project.tasks.build(task_params)
 
     if @task.save
-      redirect_to tasks_path, notice: "Task was successfully created."
+      redirect_to project_tasks_path(@project), notice: "Task added!"
     else
-      redirect_to tasks_path, alert: "Failed to create task: " + @task.errors.full_messages.to_sentence
+      redirect_to project_tasks_path(@project), alert: "Failed to add task."
     end
-  end
-
-  # DELETE /tasks/:id
-  def destroy
-    @task = Task.find(params[:id])
-    @task.destroy
-    redirect_to tasks_path, notice: "Task was successfully deleted."
   end
 
   # GET /tasks/:id/edit
   # Fetches the task and loads the edit page
   def edit
-    @task = Task.find(params[:id])
   end
 
-  # PATCH /tasks/:id
-  # Saves the changes to the database (handles both title edits AND toggles)
   def update
-    @task = Task.find(params[:id])
-
-    # task_params will automatically pick up the new title OR the new status
     if @task.update(task_params)
-      redirect_to root_path, notice: "Task updated successfully!"
+      # 👈 Redirect to the nested project tasks list
+      redirect_to project_tasks_path(@task.project), notice: "Task updated successfully!"
     else
-      # If validation fails (e.g., empty title), re-render the edit form
       render :edit, status: :unprocessable_entity
     end
   end
 
+  def destroy
+    # 1. Grab the project before we destroy the task (so we know where to go back to)
+    project = @task.project
+
+    # 2. Destroy the task
+    @task.destroy
+
+    # 3. 👈 Redirect to the saved project
+    redirect_to project_tasks_path(project), notice: "Task deleted!"
+  end
+
   private
+
+  # 2. Define the method here in the private section
+  def set_task
+    @task = Task.find(params[:id])
+  end
 
   def task_params
     params.require(:task).permit(:title, :completed, :project_id)
